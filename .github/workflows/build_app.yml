@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Descargar codigo del repositorio
+      - name: Descargar repositorio
         uses: actions/checkout@v4
 
       - name: Configurar Java 17
@@ -25,9 +25,12 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Generar estructura nativa Android faltante
+      - name: Reconstruir proyecto Flutter nativo
         run: |
-          flutter create . --platforms=android --org pe.doglife
+          mkdir /tmp/doglife_app
+          flutter create /tmp/doglife_app --org pe.doglife --project-name doglife
+          cp -r /tmp/doglife_app/android ./
+          cp -r /tmp/doglife_app/ios ./ 2>/dev/null || true
 
       - name: Instalar dependencias
         run: flutter pub get

@@ -25,6 +25,10 @@ jobs:
           channel: 'stable'
           cache: true
 
+      - name: Generar estructura nativa Android faltante
+        run: |
+          flutter create . --platforms=android --org pe.doglife
+
       - name: Instalar dependencias
         run: flutter pub get
 

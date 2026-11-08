@@ -1,26 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
-  const supabaseUrl = String.fromEnvironment(
-    'SUPABASE_URL',
-    defaultValue: 'https://mijwgkvufrxbgfmkxmlu.supabase.co',
-  );
-  const supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
-
-  if (supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty) {
-    try {
-      await Supabase.initialize(
-        url: supabaseUrl,
-        anonKey: supabaseAnonKey,
-      );
-    } catch (e) {
-      debugPrint('Aviso Supabase: $e');
-    }
-  }
-
   runApp(const DogLifeApp());
 }
 
@@ -35,14 +16,12 @@ class DogLifeApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0F4C81)),
         useMaterial3: true,
-        fontFamily: 'Roboto',
       ),
       home: const WelcomeScreen(),
     );
   }
 }
 
-// Pantalla 1: Bienvenida
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
@@ -66,8 +45,8 @@ class WelcomeScreen extends StatelessWidget {
               children: [
                 Container(
                   padding: const EdgeInsets.all(22),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF0F4C81).withOpacity(0.08),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFE6EEF5),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(Icons.pets, size: 84, color: Color(0xFF0F4C81)),
@@ -79,7 +58,6 @@ class WelcomeScreen extends StatelessWidget {
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF0F4C81),
-                    letterSpacing: 0.5,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -107,7 +85,7 @@ class WelcomeScreen extends StatelessWidget {
                       backgroundColor: const Color(0xFF0F4C81),
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      elevation: 3,
+                      elevation: 2,
                     ),
                   ),
                 ),
@@ -117,9 +95,8 @@ class WelcomeScreen extends StatelessWidget {
                   height: 52,
                   child: OutlinedButton.icon(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const RegisterWalkerScreen()),
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Convocatoria de paseadores disponible próximamente en Lima.')),
                       );
                     },
                     icon: const Icon(Icons.badge_outlined, size: 22),
@@ -143,7 +120,6 @@ class WelcomeScreen extends StatelessWidget {
   }
 }
 
-// Pantalla 2: Catálogo de Servicios
 class ServicesScreen extends StatelessWidget {
   const ServicesScreen({super.key});
 
@@ -159,44 +135,40 @@ class ServicesScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(20.0),
         children: [
-          _buildServiceCard(
+          _buildItem(
             context,
             title: 'Paseo Canino',
-            subtitle: 'Rutas seguras, reporte en tiempo real y paseadores certificados.',
+            subtitle: 'Rutas seguras y paseadores verificados.',
             icon: Icons.directions_walk,
             price: 'Desde S/ 18.00 / hora',
-            serviceType: 'paseo',
           ),
           const SizedBox(height: 16),
-          _buildServiceCard(
+          _buildItem(
             context,
             title: 'Baño & Spa a Domicilio',
-            subtitle: 'Corte de uñas, limpieza de orejas y baño con productos naturales.',
+            subtitle: 'Corte de uñas, limpieza y baño con champú natural.',
             icon: Icons.shower,
             price: 'Desde S/ 45.00',
-            serviceType: 'bano_spa',
           ),
           const SizedBox(height: 16),
-          _buildServiceCard(
+          _buildItem(
             context,
             title: 'Guardería por Horas',
-            subtitle: 'Cuidado dedicado y compañía en hogares verificados.',
+            subtitle: 'Cuidado y compañía en hogares certificados.',
             icon: Icons.home,
             price: 'Desde S/ 35.00 / turno',
-            serviceType: 'guarderia',
           ),
         ],
       ),
     );
   }
 
-  Widget _buildServiceCard(
+  Widget _buildItem(
     BuildContext context, {
     required String title,
     required String subtitle,
     required IconData icon,
     required String price,
-    required String serviceType,
   }) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
@@ -209,7 +181,7 @@ class ServicesScreen extends StatelessWidget {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: const Color(0xFF0F4C81).withOpacity(0.1),
+                  backgroundColor: const Color(0xFFE6EEF5),
                   radius: 26,
                   child: Icon(icon, color: const Color(0xFF0F4C81), size: 28),
                 ),
@@ -218,16 +190,16 @@ class ServicesScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(title, style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold)),
+                      Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 3),
-                      Text(price, style: const TextStyle(color: Color(0xFF2E7D32), fontWeight: FontWeight.w700)),
+                      Text(price, style: const TextStyle(color: Color(0xFF2E7D32), fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 12),
-            Text(subtitle, style: const TextStyle(color: Colors.black84, fontSize: 14)),
+            Text(subtitle, style: const TextStyle(color: Colors.black87, fontSize: 14)),
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
@@ -236,7 +208,7 @@ class ServicesScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => RequestFormScreen(serviceName: title, serviceCode: serviceType),
+                      builder: (context) => RequestFormScreen(serviceName: title),
                     ),
                   );
                 },
@@ -255,12 +227,9 @@ class ServicesScreen extends StatelessWidget {
   }
 }
 
-// Pantalla 3: Formulario de Solicitud directa a Supabase
 class RequestFormScreen extends StatefulWidget {
   final String serviceName;
-  final String serviceCode;
-
-  const RequestFormScreen({super.key, required this.serviceName, required this.serviceCode});
+  const RequestFormScreen({super.key, required this.serviceName});
 
   @override
   State<RequestFormScreen> createState() => _RequestFormScreenState();
@@ -268,53 +237,29 @@ class RequestFormScreen extends StatefulWidget {
 
 class _RequestFormScreenState extends State<RequestFormScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _petNameController = TextEditingController();
-  final _ownerPhoneController = TextEditingController();
-  final _districtController = TextEditingController();
-  bool _isLoading = false;
+  final _petName = TextEditingController();
+  final _phone = TextEditingController();
+  final _district = TextEditingController();
 
-  Future<void> _submitRequest() async {
+  void _confirm() {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
-
-    try {
-      final supabase = Supabase.instance.client;
-      await supabase.from('service_requests').insert({
-        'service_type': widget.serviceCode,
-        'pet_name': _petNameController.text.trim(),
-        'owner_phone': _ownerPhoneController.text.trim(),
-        'district': _districtController.text.trim(),
-        'created_at': DateTime.now().toIso8601String(),
-      });
-
-      if (!mounted) return;
-
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('¡Solicitud Recibida!'),
-          content: Text('Tu pedido de ${widget.serviceName} para ${_petNameController.text} ha sido registrado.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop();
-                Navigator.of(context).pop();
-              },
-              child: const Text('Entendido'),
-            ),
-          ],
-        ),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Reserva guardada localmente: ${_petNameController.text}')),
-      );
-      Navigator.of(context).pop();
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('¡Solicitud Recibida!'),
+        content: Text('Tu pedido de ${widget.serviceName} para ${_petName.text} ha sido recibido.'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              Navigator.of(context).pop();
+            },
+            child: const Text('Aceptar'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -335,9 +280,9 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
               const Text('Datos del servicio', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
               TextFormField(
-                controller: _petNameController,
+                controller: _petName,
                 decoration: const InputDecoration(
-                  labelText: 'Nombre de tu mascota',
+                  labelText: 'Nombre de la mascota',
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.pets),
                 ),
@@ -345,10 +290,10 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: _ownerPhoneController,
+                controller: _phone,
                 keyboardType: TextInputType.phone,
                 decoration: const InputDecoration(
-                  labelText: 'Teléfono o WhatsApp de contacto',
+                  labelText: 'Teléfono / WhatsApp',
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.phone),
                 ),
@@ -356,9 +301,9 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: _districtController,
+                controller: _district,
                 decoration: const InputDecoration(
-                  labelText: 'Distrito / Dirección (Ej: Miraflores, Surco)',
+                  labelText: 'Distrito (Ej: Miraflores, San Borja, etc.)',
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.location_on),
                 ),
@@ -369,73 +314,17 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : _submitRequest,
+                  onPressed: _confirm,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0F4C81),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
-                  child: _isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('Confirmar Reserva', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  child: const Text('Confirmar Reserva', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-// Pantalla 4: Registro de Paseadores
-class RegisterWalkerScreen extends StatelessWidget {
-  const RegisterWalkerScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Unirse al equipo'),
-        backgroundColor: const Color(0xFF0F4C81),
-        foregroundColor: Colors.white,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: [
-            const Icon(Icons.verified_user, size: 70, color: Color(0xFF0F4C81)),
-            const SizedBox(height: 18),
-            const Text(
-              'Conviértete en Paseador Certificado',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'Gana ingresos paseando y cuidando mascotas en tu zona. Se requiere DNI y antecedentes limpios.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black54, fontSize: 15),
-            ),
-            const Spacer(),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Portal de reclutamiento DogLife abriendo próximamente.')),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0F4C81),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                ),
-                child: const Text('Postular ahora'),
-              ),
-            ),
-          ],
         ),
       ),
     );

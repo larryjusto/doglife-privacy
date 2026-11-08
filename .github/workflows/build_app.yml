@@ -25,12 +25,20 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Reconstruir proyecto Flutter nativo
+      - name: Respaldar codigo de DogLife y generar soporte nativo
         run: |
-          mkdir /tmp/doglife_app
-          flutter create /tmp/doglife_app --org pe.doglife --project-name doglife
-          cp -r /tmp/doglife_app/android ./
-          cp -r /tmp/doglife_app/ios ./ 2>/dev/null || true
+          mkdir /tmp/doglife_backup
+          cp -r lib /tmp/doglife_backup/
+          cp pubspec.yaml /tmp/doglife_backup/
+          
+          # Genera la estructura limpia de Android
+          mkdir /tmp/flutter_scaffold
+          flutter create /tmp/flutter_scaffold --org pe.doglife --project-name doglife
+          cp -r /tmp/flutter_scaffold/android ./
+          
+          # Restaura el diseno y logica de DogLife
+          cp -r /tmp/doglife_backup/lib ./
+          cp /tmp/doglife_backup/pubspec.yaml ./
 
       - name: Instalar dependencias
         run: flutter pub get
